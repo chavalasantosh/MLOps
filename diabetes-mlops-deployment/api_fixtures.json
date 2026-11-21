@@ -1,0 +1,89 @@
+[
+  {
+    "name": "synthetic-1",
+    "request": {
+      "input_data": {
+        "age": 45.0,
+        "gender": "Female",
+        "polyuria": "Yes",
+        "polydipsia": "Yes",
+        "sudden_weight_loss": "No",
+        "weakness": "Yes",
+        "polyphagia": "No",
+        "genital_thrush": "No",
+        "visual_blurring": "No",
+        "itching": "No",
+        "irritability": "No",
+        "delayed_healing": "No",
+        "partial_paresis": "No",
+        "muscle_stiffness": "No",
+        "alopecia": "No",
+        "obesity": "No"
+      }
+    },
+    "expected": {
+      "prediction": 1,
+      "label": "Positive",
+      "model": "SVM-Educational",
+      "registry_version": "1"
+    }
+  },
+  {
+    "name": "synthetic-2",
+    "request": {
+      "input_data": {
+        "age": 28.0,
+        "gender": "Male",
+        "polyuria": "No",
+        "polydipsia": "No",
+        "sudden_weight_loss": "No",
+        "weakness": "No",
+        "polyphagia": "No",
+        "genital_thrush": "No",
+        "visual_blurring": "No",
+        "itching": "No",
+        "irritability": "No",
+        "delayed_healing": "No",
+        "partial_paresis": "No",
+        "muscle_stiffness": "No",
+        "alopecia": "No",
+        "obesity": "No"
+      }
+    },
+    "expected": {
+      "prediction": 0,
+      "label": "Negative",
+      "model": "SVM-Educational",
+      "registry_version": "1"
+    }
+  },
+  {
+    "name": "synthetic-3",
+    "request": {
+      "input_data": {
+        "age": 65.0,
+        "gender": "Female",
+        "polyuria": "Yes",
+        "polydipsia": "Yes",
+        "sudden_weight_loss": "Yes",
+        "weakness": "Yes",
+        "polyphagia": "Yes",
+        "genital_thrush": "Yes",
+        "visual_blurring": "Yes",
+        "itching": "Yes",
+        "irritability": "Yes",
+        "delayed_healing": "Yes",
+        "partial_paresis": "Yes",
+        "muscle_stiffness": "Yes",
+        "alopecia": "Yes",
+        "obesity": "Yes"
+      }
+    },
+    "expected": {
+      "prediction": 1,
+      "label": "Positive",
+      "model": "SVM-Educational",
+      "registry_version": "1"
+    }
+  }
+]

@@ -1,0 +1,78 @@
+name: Main CI and GHCR delivery
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: diabetes-main-delivery
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.publish.outputs.image }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verify artifact and scripts
+        run: |
+          python3 verify_artifact.py
+          python3 -m py_compile service.py test_api.py verify_artifact.py
+          bash -n scripts/smoke.sh scripts/deploy.sh
+          docker compose config -q
+      - name: Build image once
+        run: docker build --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" --label "org.opencontainers.image.revision=$GITHUB_SHA" -t diabetes-bentoml:v1 .
+      - name: Test the exact image
+        run: bash scripts/smoke.sh
+      - name: Authenticate and publish tested image
+        id: publish
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          repo="ghcr.io/${GITHUB_REPOSITORY,,}"
+          tag="$repo:sha-$GITHUB_SHA"
+          export DOCKER_CONFIG="$(mktemp -d)"
+          trap 'docker logout ghcr.io >/dev/null 2>&1 || true; rm -rf "$DOCKER_CONFIG"' EXIT
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          docker tag diabetes-bentoml:v1 "$tag"
+          docker push "$tag" | tee push.log
+          digest=$(sed -nE 's/.*digest: (sha256:[0-9a-f]{64}).*/\1/p' push.log | tail -1)
+          [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]
+          ref="$repo@$digest"
+          echo "image=$ref" >> "$GITHUB_OUTPUT"
+          printf '## Published tested image\n\n`%s`\n\nCommit: `%s`\n' "$ref" "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+  # Enable only on a dedicated, persistent, trusted host. THM VMs are not suitable.
+  deploy:
+    needs: publish
+    if: vars.ENABLE_LAB_AUTO_DEPLOY == 'true' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, linux, x64, diabetes-lab]
+    timeout-minutes: 20
+    environment: lab
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Deploy digest with readiness, regression tests and rollback
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE_REF: ${{ needs.publish.outputs.image }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          export DOCKER_CONFIG="$(mktemp -d)"
+          trap 'docker logout ghcr.io >/dev/null 2>&1 || true; rm -rf "$DOCKER_CONFIG"' EXIT
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          bash scripts/deploy.sh "$IMAGE_REF"

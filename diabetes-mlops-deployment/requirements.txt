@@ -1,0 +1,10 @@
+mlflow==3.5.1
+bentoml==1.4.27
+scikit-learn==1.6.1
+numpy==2.4.6
+pandas==2.2.3
+scipy==1.16.3
+pydantic==2.14.2
+joblib==1.6.0
+threadpoolctl==3.7.0
+cloudpickle==3.1.2

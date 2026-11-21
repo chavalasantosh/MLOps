@@ -1,0 +1,8 @@
+*
+!Dockerfile
+!requirements.txt
+!service.py
+!diabetes_model.bentomodel
+!model_manifest.json
+!api_fixtures.json
+!verify_artifact.py

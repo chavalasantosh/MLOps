@@ -1,0 +1,41 @@
+{
+  "dataset_sha256": "7889d9d0beb7dd1ccc58da99f72763f16afb259b5dbbaa086f8195366ff66137",
+  "model_archive_sha256": "524bceeda5a2051c3781db07a1cffca79562d031a6c93d72ae38d83d8a77cc91",
+  "registry": {
+    "registered_name": "Diabetes-Risk-Educational",
+    "version": "1",
+    "alias": "candidate",
+    "model_uri": "models:/Diabetes-Risk-Educational@candidate",
+    "source": {
+      "run_id": "353a2db8e4fb4276b496740555365db3",
+      "model_uri": "models:/m-8bc9a3a4b7c1455b844c7a63bd8e8b33"
+    }
+  },
+  "bento_tag": "diabetes_risk_educational:boucwoxfq2zkeasc",
+  "algorithm": "SVM",
+  "educational_gate_passed": true,
+  "holdout_metrics": {
+    "accuracy": 0.9607843137254902,
+    "balanced_accuracy": 0.9527777777777777,
+    "precision": 0.9722222222222222,
+    "recall": 0.9722222222222222,
+    "f1": 0.9722222222222222,
+    "roc_auc": 0.9814814814814815,
+    "average_precision": 0.9913852924841784,
+    "brier": 0.04506664990831973
+  },
+  "training_python": "3.13.18 (main, Oct 26 2026, 15:28:15) [GCC 13.3.0]",
+  "dependencies": {
+    "mlflow": "3.5.1",
+    "bentoml": "1.4.27",
+    "scikit-learn": "1.6.1",
+    "numpy": "2.4.6",
+    "pandas": "2.2.3",
+    "scipy": "1.16.3",
+    "pydantic": "2.14.2",
+    "joblib": "1.6.0",
+    "threadpoolctl": "3.7.0",
+    "cloudpickle": "3.1.2"
+  },
+  "run_id": "20261121T082628Z-d00258"
+}

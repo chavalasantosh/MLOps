@@ -1,0 +1,47 @@
+{
+  "candidate": {
+    "winner": "SVM",
+    "run_id": "353a2db8e4fb4276b496740555365db3",
+    "model_uri": "models:/m-8bc9a3a4b7c1455b844c7a63bd8e8b33",
+    "selection": "development CV F1, recall, fold SD",
+    "thresholds": {
+      "f1": 0.75,
+      "recall": 0.75,
+      "balanced_accuracy": 0.7
+    },
+    "data_hash": "7889d9d0beb7dd1ccc58da99f72763f16afb259b5dbbaa086f8195366ff66137"
+  },
+  "metrics": {
+    "accuracy": 0.9607843137254902,
+    "balanced_accuracy": 0.9527777777777777,
+    "precision": 0.9722222222222222,
+    "recall": 0.9722222222222222,
+    "f1": 0.9722222222222222,
+    "roc_auc": 0.9814814814814815,
+    "average_precision": 0.9913852924841784,
+    "brier": 0.04506664990831973
+  },
+  "holdout_rows": 51,
+  "confusion_matrix": [
+    [
+      14,
+      1
+    ],
+    [
+      1,
+      35
+    ]
+  ],
+  "bootstrap_95_percent": {
+    "f1": [
+      0.9290492957746479,
+      1.0
+    ],
+    "recall": [
+      0.9166666666666666,
+      1.0
+    ],
+    "valid_resamples": 500
+  },
+  "gate_passed": true
+}
