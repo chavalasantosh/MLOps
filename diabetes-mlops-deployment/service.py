@@ -39,3 +39,12 @@ class DiabetesClassifier:
         result = int(self.model.predict(frame)[0])
         return {"prediction": result, "label": "Positive" if result == 1 else "Negative",
                 "model": 'SVM-Educational', "registry_version": '1'}
+
+    @bentoml.api
+    def version(self) -> dict:
+        return {
+            "application": "Diabetes MLOps",
+            "version": "1.1.0",
+            "framework": "BentoML",
+            "purpose": "Educational"
+        }

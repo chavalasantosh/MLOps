@@ -87,8 +87,34 @@ def main():
     check("GET prediction rejected", status == 405, f"HTTP {status}")
     repeated = [request("POST", "/predict", sample) for _ in range(5)]
     check("five repeat predictions consistent", all(correct_result(s,b,fixtures[0]["expected"]) for s,b,_ in repeated))
+    
+    # Test application version endpoint
+    status, body, elapsed = request("POST", "/version", {})
+
+    expected_version = {
+        "application": "Diabetes MLOps",
+        "version": "1.1.0",
+        "framework": "BentoML",
+        "purpose": "Educational"
+    }
+
+    try:
+        version_valid = (
+            status == 200
+            and json.loads(body) == expected_version
+        )
+    except (ValueError, TypeError):
+        version_valid = False
+
+    check(
+        "Application version endpoint",
+        version_valid,
+        f"HTTP {status}, {elapsed*1000:.1f} ms | {body[:300]}"
+    )
+
     print(f"RESULT: {sum(results)}/{len(results)} tests passed")
     return 0 if all(results) else 1
+
 
 if __name__ == "__main__":
     sys.exit(main())
