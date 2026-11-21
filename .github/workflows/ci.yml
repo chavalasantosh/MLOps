@@ -1,0 +1,56 @@
+name: Pull request CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: diabetes-mlops-deployment
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      # STEP 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      # STEP 2: Verify model and source code
+      - name: Verify model and source
+        run: |
+          python3 verify_artifact.py
+          python3 -m py_compile service.py test_api.py verify_artifact.py
+          bash -n scripts/smoke.sh
+          bash -n scripts/deploy.sh
+          docker compose config -q
+
+      # STEP 3: Build Docker image
+      - name: Build image
+        run: |
+          docker build -t diabetes-bentoml:v1 .
+
+      # STEP 4: Inspect image and layers
+      - name: Inspect Docker image
+        run: |
+          docker images
+          docker history diabetes-bentoml:v1
+
+      # STEP 5: Start container and test API
+      - name: Smoke test container
+        run: |
+          bash scripts/smoke.sh
+
+      # STEP 6: Confirm successful integration
+      - name: CI success
+        run: |
+          echo "======================================"
+          echo "ALL CI TESTS PASSED"
+          echo "======================================"
